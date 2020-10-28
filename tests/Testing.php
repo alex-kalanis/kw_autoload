@@ -1,34 +1,17 @@
-#!/usr/bin/php
+#!/usr/bin/env php
 <?php
+
+define('MIN_NECESSARY_VERSION', '7.2.0');
+
+if (version_compare(phpversion(), MIN_NECESSARY_VERSION, '<')) {
+    echo sprintf('PHPVER  [FAIL] bad version %s , need at least %s %s', phpversion(), MIN_NECESSARY_VERSION, "\n");
+    die(1);
+}
 
 use kalanis\kw_autoload\Autoload;
 use kalanis\kw_autoload\AutoloadException;
 
-
-class AloadTestingException extends \Exception
-{
-    // exception for testing purposes
-}
-
-
-class TestingBase
-{
-    const CRLF = "\r\n";
-
-    public function __call($name, $arguments)
-    {
-        $fullName = 'test' . ucfirst($name);
-        if (method_exists($this, $fullName)) {
-            try {
-                $this->{$fullName}(...$arguments);
-                echo sprintf('%s  [ OK ] %s', str_pad($name, 30), static::CRLF);
-            } catch (AutoloadException | AloadTestingException $ex) {
-                echo sprintf('%s  [FAIL] %s %s', str_pad($name, 30), $ex->getMessage(), static::CRLF);
-            }
-        }
-    }
-}
-
+require_once __DIR__ . '/TestingBase.php';
 
 /**
  * Class Testing
@@ -37,17 +20,6 @@ class TestingBase
  * Testing of autoloader
  * Someone said it is not possible. Eh...
  * It need prepared structure with available classes and autoloader that throws exceptions
- *
- * @method FullPathOk()
- * @method FullPathFail()
- * @method FullPathFailExtend()
- * @method FullPathFailInterface()
- * @method FullPathFailTrait()
- * @method UserPathOk()
- * @method ProjectPathOk()
- * @method ProjectPathFail()
- * @method IndependentOk()
- * @method OnTheFly()
  */
 class Testing extends TestingBase
 {
@@ -167,11 +139,14 @@ class Testing extends TestingBase
         new TestClass20();
     }
 
+    /**
+     * @throws AloadTestingException
+     */
     protected function testOnTheFly(): void
     {
         try {
             new fly_project\TestFlyClass1(); // extend
-            throw new AloadTestingException('Pass for non-existent class');
+            throw new AloadTestingException('Pass for class in unknown path');
         } catch (AutoloadException $ex) {
             // OK
         }
@@ -182,13 +157,4 @@ class Testing extends TestingBase
 
 
 $lib = new Testing();
-$lib->FullPathOk();
-$lib->FullPathFail();
-$lib->FullPathFailExtend();
-$lib->FullPathFailInterface();
-$lib->FullPathFailTrait();
-$lib->UserPathOk();
-$lib->ProjectPathOk();
-$lib->ProjectPathFail();
-$lib->IndependentOk();
-$lib->OnTheFly();
+$lib->runner();

@@ -8,51 +8,107 @@ if (!class_exists('\kalanis\kw_autoload\Autoload')) {
 }
 
 
-final class ClassStorage
+/**
+ * Class ClassFormatter
+ * @package kalanis\kw_autoload
+ * Format records in cache
+ * This one uses raw lines
+ */
+class ClassFormatter
 {
-    const STORAGE_FILE = 'cache.txt';
-    const STORAGE_SPLIT_RECORD = ";;";
-    const STORAGE_SPLIT_LINE = "\r\n";
 
+    /**
+     * @param WantedClassInfo[] $classesInfo
+     * @return string
+     */
+    public function toFormat(array $classesInfo): string
+    {
+        $dataLines = [];
+        foreach ($classesInfo as $info) {
+            $dataLines[] = implode($this->recordSplitter(), [$info->getName(), intval($info->getEscapeUnderscore()), $info->getFinalPath()]);
+        }
+        return implode($this->lineSplitter(), $dataLines);
+    }
+
+    /**
+     * @param string $content
+     * @return WantedClassInfo[]
+     */
+    public function fromFormat(string $content): array
+    {
+        $classesInfo = [];
+        foreach (explode($this->lineSplitter(), $content) as $item) {
+            list($className, $escapes, $finalPath) = explode($this->recordSplitter(), $item, 3);
+            $classInfo = new WantedClassInfo($className, boolval($escapes));
+            $classInfo->setFinalPath($finalPath);
+            $classesInfo[] = $classInfo;
+        }
+        return $classesInfo;
+    }
+
+    protected function lineSplitter(): string
+    {
+        return "\r\n";
+    }
+
+    protected function recordSplitter(): string
+    {
+        return ';;';
+    }
+}
+
+
+/**
+ * Class ClassStorage
+ * @package kalanis\kw_autoload
+ * Class for manipulation with cached paths
+ * Extend, edit constants for own cache
+ */
+class ClassStorage
+{
+    /** @var ClassFormatter */
+    protected $format = null;
+    /** @var string */
     protected $storagePath = '';
 
-    public function __construct()
+    public function __construct(ClassFormatter $format, string $storageFile = '')
     {
-        $this->storagePath = implode(DIRECTORY_SEPARATOR, [__DIR__,  '..', 'data', static::STORAGE_FILE]);
+        $this->format = $format;
+        $this->storagePath = implode(DIRECTORY_SEPARATOR, $this->getPath($storageFile));
+    }
+
+    protected function getPath(string $storageFile): array
+    {
+        return [__DIR__,  '..', 'data', (empty($storageFile) ? 'cache.txt' : $storageFile)];
     }
 
     /**
      * @param WantedClassInfo[] $classesInfo
      */
-    public function save(array $classesInfo): void
+    public final function save(array $classesInfo): void
     {
-        $dataLines = [];
-        foreach ($classesInfo as $info) {
-            $dataLines[] = implode(static::STORAGE_SPLIT_RECORD, [$info->getName(), intval($info->getEscapeUnderscore()), $info->getFinalPath()]);
-        }
         if (is_writable($this->storagePath) || !file_exists($this->storagePath)) {
-            file_put_contents($this->storagePath, implode(static::STORAGE_SPLIT_LINE, $dataLines));
+            file_put_contents($this->storagePath, $this->format->toFormat($classesInfo));
         }
     }
 
     /**
      * @return WantedClassInfo[]
      */
-    public function load(): array
+    public final function load(): array
     {
         if (is_file($this->storagePath) && is_readable($this->storagePath)) {
-            $content = file_get_contents($this->storagePath);
+            return $this->format->fromFormat(file_get_contents($this->storagePath));
         } else {
             return [];
         }
-        $classesInfo = [];
-        foreach (explode(static::STORAGE_SPLIT_LINE, $content) as $item) {
-            list($className, $escapes, $finalPath) = explode(static::STORAGE_SPLIT_RECORD, $item, 3);
-            $classInfo = new WantedClassInfo($className, boolval($escapes));
-            $classInfo->setFinalPath($finalPath);
-            $classesInfo[] = $classInfo;
+    }
+
+    public final function remove(): void
+    {
+        if (is_file($this->storagePath)) {
+            unlink($this->storagePath);
         }
-        return $classesInfo;
     }
 }
 
@@ -65,9 +121,9 @@ final class ClassStorage
  */
 final class CachedAutoload
 {
-    public static function useCache(): void
+    public static function useCache(?ClassStorage $storage = null): void
     {
-        $storage = new ClassStorage();
+        $storage = $storage ?: new ClassStorage(new ClassFormatter());
         Autoload::setClassesInfo($storage->load());
 
         register_shutdown_function(function () use ($storage) {
