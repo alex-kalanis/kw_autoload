@@ -1,3 +1,4 @@
 .idea
 phpunit.phar
+phpunit*
 phpunit

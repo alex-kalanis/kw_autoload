@@ -201,6 +201,15 @@ final class Autoload
     }
 
     /**
+     * Get what testing mode is set
+     * @return bool
+     */
+    public static function getTestMode(): bool
+    {
+        return static::$testingMode;
+    }
+
+    /**
      * Autoloader by directory
      * @param string $className
      * @throws AutoloadException
