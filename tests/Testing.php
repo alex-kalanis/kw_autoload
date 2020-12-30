@@ -4,7 +4,7 @@
 define('MIN_NECESSARY_VERSION', '7.2.0');
 
 if (version_compare(phpversion(), MIN_NECESSARY_VERSION, '<')) {
-    echo sprintf('PHPVER  [FAIL] bad version %s , need at least %s %s', phpversion(), MIN_NECESSARY_VERSION, "\n");
+    echo sprintf('PHPVER  [FAIL] bad version %s , need at least %s %s', phpversion(), MIN_NECESSARY_VERSION, PHP_EOL);
     die(1);
 }
 

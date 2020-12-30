@@ -1,4 +1,7 @@
-.idea
-phpunit.phar
-phpunit*
+# Editor configuration
+.idea/
+
+# checks
 phpunit
+phpunit-*
+.phpunit*
