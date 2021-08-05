@@ -29,9 +29,15 @@ The mask is formatted in _sprintf()_ format and has following params:
  * %1$s - directory separator by your OS
  * %2$s - path to project, set by _Autoload::setBasePath()_, usually __ DIR __ in root
  * %3$s - submodule vendor
- * %4$s - module name
+ * %4$s - project name
+ * %5$s - module name
+ * %6$s - the rest of path / class file name
 
-The rest of class namespace/path is appended and got php extension.
+So in the case of buliding own paths remember to set always the latest - the path will
+always contains the rest of that, after that is added module name, after that project
+name and after that submodule vendor name. This movements are necessary to be able to
+determine where the heck is stable dir like ```php-src/```. And not everytime is on
+desired place.
 
 ### Add/Change paths on-the-fly
 

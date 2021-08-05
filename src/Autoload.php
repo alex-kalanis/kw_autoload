@@ -30,6 +30,7 @@ final class WantedClassInfo
 
     protected $vendor = '';
     protected $project = '';
+    protected $module = '';
     protected $classPath = '';
     protected $className = '';
     protected $finalPath = '';
@@ -51,12 +52,17 @@ final class WantedClassInfo
     {
         $classPath = explode(static::PHP_CLASS_DELIMITER, $className);
         $len = count($classPath);
-        if ($len > 2) {
+        if ($len > 3) {
             $this->vendor = reset($classPath);
             $this->project = next($classPath);
+            $this->module = next($classPath);
+            $this->classPath = $this->findPath(array_slice($classPath, 3));
+        } elseif ($len > 2) {
+            $this->project = reset($classPath);
+            $this->module = next($classPath);
             $this->classPath = $this->findPath(array_slice($classPath, 2));
         } elseif ($len > 1) {
-            $this->project = reset($classPath);
+            $this->module = reset($classPath);
             $this->classPath = $this->findPath(array_slice($classPath, 1));
         } else {
             $this->classPath = $this->findPath($classPath);
@@ -76,6 +82,11 @@ final class WantedClassInfo
     public function getProject(): string
     {
         return $this->project;
+    }
+
+    public function getModule(): string
+    {
+        return $this->module;
     }
 
     public function getPath(): string
@@ -110,14 +121,17 @@ final class WantedClassInfo
  * @package kalanis\kw_load
  *
  * Autoloading of classes
- * analyze set paths with function
+ * analyze set paths with following function
  * @see sprintf
  * and try to load files
+ *
  * params in paths:
  * 1 - directory separator by your OS
  * 2 - path to project, set by setBasePath(), usually __DIR__ in root
  * 3 - submodule vendor
- * 4 - module name
+ * 4 - project name
+ * 5 - module name
+ * 6 - rest of path to the file
  */
 final class Autoload
 {
@@ -227,16 +241,19 @@ final class Autoload
         $foundFiles = [];
         $info = new WantedClassInfo($className, static::$escapingUnderscore);
 
+//print_r(['pt info', $info]);
         foreach (static::$paths as $path) {
-            $currentPath = sprintf(
-                    $path,
-                    DIRECTORY_SEPARATOR, // %1$s
-                    static::$basePath, // %2$s
-                    $info->getVendor(), // %3$s
-                    $info->getProject() // %4$s
-                ) . $info->getPath() . WantedClassInfo::PHP_EXTENSION
-            ;
-            if (is_file($currentPath)) {
+            $currentPath = realpath(sprintf(
+                $path,
+                DIRECTORY_SEPARATOR, // %1$s
+                static::$basePath, // %2$s
+                $info->getVendor(), // %3$s
+                $info->getProject(), // %4$s
+                $info->getModule(), // %5$s
+                $info->getPath() . WantedClassInfo::PHP_EXTENSION // %6$s
+            ));
+//print_r(['pt lookup', $path, $currentPath]);
+            if ($currentPath && is_file($currentPath)) {
                 $foundFiles[] = $currentPath;
 
                 require_once $currentPath;
@@ -293,16 +310,19 @@ class Helper
     {
         Autoload::setBasePath($rootPath);
         // maybe looks like magic, but it is not
-        Autoload::addPath('%2$s%1$s' . $vendorPath. '%1$s%3$s%1$s%4$s%1$ssrc%1$s');
-        Autoload::addPath('%2$s%1$s' . $vendorPath. '%1$s%3$s%1$s%4$s%1$s');
-        Autoload::addPath('%2$s%1$s' . $vendorPath. '%1$s%4$s%1$ssrc%1$s');
-        Autoload::addPath('%2$s%1$s' . $vendorPath. '%1$s%4$s%1$s');
-        Autoload::addPath('%2$s%1$s' . $vendorPath. '%1$s%3$s%1$ssrc%1$s');
-        Autoload::addPath('%2$s%1$s' . $vendorPath. '%1$s%3$s%1$s');
+        Autoload::addPath('%2$s%1$s' . $vendorPath. '%1$s%3$s%1$s%4$s%1$sphp-src%1$s%5$s%1$s%6$s');
+        Autoload::addPath('%2$s%1$s' . $vendorPath. '%1$s%3$s%1$s%4$s%1$ssrc%1$s%5$s%1$s%6$s');
+        Autoload::addPath('%2$s%1$s' . $vendorPath. '%1$s%3$s%1$s%4$s%1$s%5$s%1$s%6$s');
+        Autoload::addPath('%2$s%1$s' . $vendorPath. '%1$s%4$s%1$sphp-src%1$s%5$s%1$s%6$s');
+        Autoload::addPath('%2$s%1$s' . $vendorPath. '%1$s%4$s%1$ssrc%1$s%5$s%1$s%6$s');
+        Autoload::addPath('%2$s%1$s' . $vendorPath. '%1$s%4$s%1$s%5$s%1$s%6$s');
+        Autoload::addPath('%2$s%1$s' . $vendorPath. '%1$s%5$s%1$s%6$s');
         if (!empty($projectPath)) {
-            Autoload::addPath('%2$s%1$s' . $projectPath. '%1$s');
+            Autoload::addPath('%2$s%1$s' . $projectPath. '%1$s%5$s%1$s%6$s');
+            Autoload::addPath('%2$s%1$s' . $projectPath. '%1$s%6$s');
         }
-        Autoload::addPath('%2$s%1$s');
+        Autoload::addPath('%2$s%1$s%5$s%1$s%6$s');
+        Autoload::addPath('%2$s%1$s%6$s');
         spl_autoload_register('\kalanis\kw_autoload\Autoload::autoloading');
     }
 }

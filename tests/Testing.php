@@ -13,13 +13,14 @@ use kalanis\kw_autoload\AutoloadException;
 
 require_once __DIR__ . '/TestingBase.php';
 
+
 /**
  * Class Testing
  * @package kalanis\kw_load
  *
  * Testing of autoloader
- * Someone said it is not possible. Eh...
- * It need prepared structure with available classes and autoloader that throws exceptions
+ * Someone said it is not possible. Ahem...
+ * It needs prepared structure with available classes and autoloader that throws an exception when path is not found.
  */
 class Testing extends TestingBase
 {
@@ -33,11 +34,16 @@ class Testing extends TestingBase
         // Maybe looks like magic, but it is not
         // Beware! If the file will be found earlier (in bad path) and checks pass (mainly due bad namespace), it will be used!
         // For testing purposes they are in the reverse order
-        Autoload::addPath('%2$s%1$s'); // path on root
-        Autoload::addPath('%2$s%1$s%4$s%1$s'); // project dir only
-        Autoload::addPath('%2$s%1$s%4$s%1$ssrc%1$s'); // project_dir/src/
-        Autoload::addPath('%2$s%1$s%3$s%1$s%4$s%1$s'); // vendor/project_dir/
-        Autoload::addPath('%2$s%1$s%3$s%1$s%4$s%1$ssrc%1$s'); // vendor/project_dir/src/
+        Autoload::addPath('%2$s%1$s%6$s'); // path on root
+        Autoload::addPath('%2$s%1$s%5$s%1$s%6$s'); // module/
+        Autoload::addPath('%2$s%1$s%4$s%1$s%5$s%1$s%6$s'); // project dir/module/
+        Autoload::addPath('%2$s%1$s%4$s%1$s%5$s%1$ssrc%1$s%6$s'); // project dir/module/src/
+        Autoload::addPath('%2$s%1$s%4$s%1$ssrc%1$s%6$s'); // project_dir/src/
+        Autoload::addPath('%2$s%1$s%4$s%1$ssrc%1$s%5$s%1$s%6$s'); // project_dir/src/module/
+        Autoload::addPath('%2$s%1$s%3$s%1$s%4$s%1$s%6$s'); // vendor/project_dir/
+        Autoload::addPath('%2$s%1$s%3$s%1$s%4$s%1$s%5$s%1$s%6$s'); // vendor/project_dir/module/
+        Autoload::addPath('%2$s%1$s%3$s%1$s%4$s%1$ssrc%1$s%6$s'); // vendor/project_dir/src/
+        Autoload::addPath('%2$s%1$s%3$s%1$s%4$s%1$ssrc%1$s%5$s%1$s%6$s'); // vendor/project_dir/src/module/
         spl_autoload_register('\kalanis\kw_autoload\Autoload::autoloading');
     }
 
@@ -150,7 +156,7 @@ class Testing extends TestingBase
         } catch (AutoloadException $ex) {
             // OK
         }
-        Autoload::addPath('%2$s%1$s%3$s%1$s%4$s%1$s_src%1$s'); // vendor/project_dir/_src/
+        Autoload::addPath('%2$s%1$s%4$s%1$s%5$s%1$s_src%1$s%6$s'); // vendor/project_dir/_src/
         new fly_project\TestFlyClass1();
     }
 }
