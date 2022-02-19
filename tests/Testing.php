@@ -11,7 +11,7 @@ if (version_compare(phpversion(), MIN_NECESSARY_VERSION, '<')) {
 use kalanis\kw_autoload\Autoload;
 use kalanis\kw_autoload\AutoloadException;
 
-require_once __DIR__ . '/TestingBase.php';
+require_once __DIR__ . DIRECTORY_SEPARATOR . 'TestingBase.php';
 
 
 /**
@@ -48,6 +48,7 @@ class Testing extends TestingBase
     }
 
     /**
+     * Everything OK with these classes
      * @throws AutoloadException
      */
     protected function testFullPathOk(): void
@@ -64,63 +65,74 @@ class Testing extends TestingBase
     }
 
     /**
+     * Non-existent call class
      * @throws AloadTestingException
      */
     protected function testFullPathFail(): void
     {
         try {
             new user\project\TestClass1F(); // extend
-            throw new AloadTestingException('Pass for non-existent class');
+            throw new AloadTestingException('Pass for non-existent class!');
         } catch (AutoloadException $ex) {
             // OK
         }
     }
 
     /**
+     * Non-existent base class
      * @throws AloadTestingException
      */
     protected function testFullPathFailExtend(): void
     {
         try {
             new user\project\TestClass2F(); // extend
-            throw new AloadTestingException('Pass for non-existent extend');
+            throw new AloadTestingException('Pass for non-existent extend!');
         } catch (AutoloadException $ex) {
             // OK
         }
     }
 
     /**
+     * Non-existent interface
      * @throws AloadTestingException
      */
     protected function testFullPathFailInterface(): void
     {
         try {
             new user\project\TestClass3F(); // interface
-            throw new AloadTestingException('Pass for non-existent interface');
+            throw new AloadTestingException('Pass for non-existent interface!');
         } catch (AutoloadException $ex) {
             // OK
         }
     }
 
     /**
+     * Non-existent trait in class
      * @throws AloadTestingException
+     * Currently problems with testing non-existent traits
      */
     protected function testFullPathFailTrait(): void
     {
         try {
             new user\project\TestClass4F(); // trait
-            throw new AloadTestingException('Pass for non-existent trait');
+            throw new AloadTestingException('Pass for non-existent trait!');
         } catch (AutoloadException $ex) {
             // OK
         }
     }
 
+    /**
+     * Parent directory structure, not "user/"
+     */
     protected function testUserPathOk(): void
     {
         new user\TestClass10();
         new user\TestClass11();
     }
 
+    /**
+     * Custom directory structure outside the "user/"
+     */
     protected function testProjectPathOk(): void
     {
         new project\TestClass1();
@@ -128,31 +140,55 @@ class Testing extends TestingBase
     }
 
     /**
+     * Non-existent class
      * @throws AloadTestingException
      */
     protected function testProjectPathFail(): void
     {
         try {
             new project\TestPClass1F(); // extend
-            throw new AloadTestingException('Pass for non-existent class');
+            throw new AloadTestingException('Pass for non-existent class!');
         } catch (AutoloadException $ex) {
             // OK
         }
     }
 
+    /**
+     * No namespace for this class, but exists somewhere on the defined paths
+     */
     protected function testIndependentOk(): void
     {
         new TestClass20();
     }
 
     /**
+     * Try functions and constants inside the namespace
+     * @todo: with php core define the way to get the necessary info for autoloading
+     */
+    protected function testFuncConstOk(): void
+    {
+        new \user\project\TestClass9();
+    }
+
+    /**
+     * Test for Enum type
+     */
+    protected function testEnumOk(): void
+    {
+        if (PHP_VERSION_ID >= 80100) {
+            $var = \user\project\TestEnum1::Clubs;
+        }
+    }
+
+    /**
+     * Load on-the-fly
      * @throws AloadTestingException
      */
     protected function testOnTheFly(): void
     {
         try {
             new fly_project\TestFlyClass1(); // extend
-            throw new AloadTestingException('Pass for class in unknown path');
+            throw new AloadTestingException('Pass for class in unknown path!');
         } catch (AutoloadException $ex) {
             // OK
         }

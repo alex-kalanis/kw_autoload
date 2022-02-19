@@ -238,12 +238,12 @@ final class Autoload
             return;
         }
 
-        $foundFiles = [];
+        $dealFiles = [];
         $info = new WantedClassInfo($className, static::$escapingUnderscore);
 
 //print_r(['pt info', $info]);
         foreach (static::$paths as $path) {
-            $currentPath = realpath(sprintf(
+            $currentPath = sprintf(
                 $path,
                 DIRECTORY_SEPARATOR, // %1$s
                 static::$basePath, // %2$s
@@ -251,23 +251,24 @@ final class Autoload
                 $info->getProject(), // %4$s
                 $info->getModule(), // %5$s
                 $info->getPath() . WantedClassInfo::PHP_EXTENSION // %6$s
-            ));
-//print_r(['pt lookup', $path, $currentPath]);
-            if ($currentPath && is_file($currentPath)) {
-                $foundFiles[] = $currentPath;
+            );
+            $realPath = realpath($currentPath);
+//print_r(['pt lookup', $path, $currentPath, $realPath]);
+            $dealFiles[] = $currentPath;
+            if ($realPath && is_file($currentPath)) {
 
-                require_once $currentPath;
+                require_once $realPath;
 
                 // time for check file if it contains desired class
                 if (static::checkLoad($className)) {
-                    $info->setFinalPath($currentPath);
+                    $info->setFinalPath($realPath);
                     static::$classesInfo[$className] = $info;
                     return;
                 }
             }
         }
         if (static::$testingMode) {
-            throw new AutoloadException(sprintf('Class not found. Class name: %s, available files: %s', $className, implode(',', $foundFiles)));
+            throw new AutoloadException(sprintf('Class not found. Class name: %s, looked up files: *%s*', $className, implode('* , *', $dealFiles)));
         }
     }
 
@@ -290,6 +291,7 @@ final class Autoload
 
     protected static function checkLoad(string $className): bool
     {
+//var_dump(['check' => $className]);
         if (class_exists($className)) {
             return true;
         }
@@ -299,6 +301,21 @@ final class Autoload
         if (trait_exists($className)) {
             return true;
         }
+        if (function_exists($className)) {
+            return true;
+        }
+        if (enum_exists($className)) {
+            return true;
+        }
+        return false;
+    }
+}
+
+
+// PHP < 8.1
+if (!function_exists('enum_exists')) {
+    function enum_exists(string $enumName, bool $autoload = true)
+    {
         return false;
     }
 }

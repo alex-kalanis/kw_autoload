@@ -39,6 +39,12 @@ class TestingBase
         }
     }
 
+    /**
+     * Call method and tell results to output
+     * @param string $fullName
+     * @param string $name
+     * @param array $arguments
+     */
     protected function caller(string $fullName, string $name, array $arguments = []): void
     {
         try {

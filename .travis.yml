@@ -1,0 +1,17 @@
+# see https://docs.travis-ci.com/user/languages/php/ for more hints
+language: php
+
+php:
+  - 7.3
+  - 7.4
+  - 8.0
+#  - 8.1
+
+before_script:
+  - chmod +x tests/Testing.php
+
+script:
+  - tests/Testing.php
+
+notifications:
+  email: "me@kalanys.com"
