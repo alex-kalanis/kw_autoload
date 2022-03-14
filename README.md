@@ -1,12 +1,13 @@
 kw_autoload
 ================
 
-Personal autoloader for KWCMS. Far simplier than Composer. But with tests. No need
+Personal autoloader for KWCMS. Far simplified than Composer. But with tests. No need
 for remote CLI. Basic variant contains no cache. But you can use supplied cache or
 write your own.
 
 Only thing this cannot use is your own functions directly in files - everything must
-be packed in classes. You just did not find them.
+be packed in classes. You just did not find them. This is the issue with PHP core,
+not your code.
 
 Installation
 ------------
@@ -22,7 +23,7 @@ Setting
 
 Paths are set from external source - not inside as you're probably used to know. So
 you must define your file structure and say that to autoloader in form of masks with
-defined properties. He doesn't want to make full lookup through hiearchy each time
+defined properties. He does'nt want to make full lookup through hierarchy each time
 the file is need. That consume too much resources.
 
 The mask is formatted in _sprintf()_ format and has following params:
@@ -33,7 +34,7 @@ The mask is formatted in _sprintf()_ format and has following params:
  * %5$s - module name
  * %6$s - the rest of path / class file name
 
-So in the case of buliding own paths remember to set always the latest - the path will
+So in the case of building own paths remember to set always the latest - the path will
 always contains the rest of that, after that is added module name, after that project
 name and after that submodule vendor name. This movements are necessary to be able to
 determine where the heck is stable dir like ```php-src/```. And not everytime is on
@@ -43,7 +44,7 @@ desired place.
 
 The setting path by mask allows to add another paths on-the-fly. So if there is
 something unusual in path creation, it's possible to add that after bootstrap time.
-Main example is where the files are in ```_vendor/_src/path``` (with underscore), but
+Main example is where the files are in ```_vendor/_src/path``` (with underscores), but
 autoloader is set to ```vendor/src/path``` (without underscore).
 
 Tests
