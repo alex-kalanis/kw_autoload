@@ -77,6 +77,10 @@ class ClassStorage
         $this->storagePath = implode(DIRECTORY_SEPARATOR, $this->getPath($storageFile));
     }
 
+    /**
+     * @param string $storageFile
+     * @return string[]
+     */
     protected function getPath(string $storageFile): array
     {
         return [__DIR__,  '..', 'data', (empty($storageFile) ? 'cache.txt' : $storageFile)];

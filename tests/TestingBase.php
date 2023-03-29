@@ -9,6 +9,12 @@ class AloadTestingException extends \Exception
 }
 
 
+class AloadSkipException extends \Exception
+{
+    // exception for testing purposes - skip the test
+}
+
+
 class TestingBase
 {
     const TEST_PREFIX = 'test';
@@ -50,6 +56,8 @@ class TestingBase
         try {
             call_user_func_array([$this, $fullName], $arguments);
             echo sprintf('%s  [ OK ] %s', str_pad($name, 30), PHP_EOL);
+        } catch (AloadSkipException $ex) {
+            echo sprintf('%s  [SKIP] %s %s', str_pad($name, 30), $ex->getMessage(), PHP_EOL);
         } catch (AutoloadException | AloadTestingException $ex) {
             echo sprintf('%s  [FAIL] %s %s', str_pad($name, 30), $ex->getMessage(), PHP_EOL);
         }

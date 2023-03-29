@@ -28,12 +28,19 @@ final class WantedClassInfo
     const PHP_CLASS_DELIMITER = '\\';
     const PHP_EXTENSION = '.php';
 
+    /** @var string */
     protected $vendor = '';
+    /** @var string */
     protected $project = '';
+    /** @var string */
     protected $module = '';
+    /** @var string */
     protected $classPath = '';
+    /** @var string */
     protected $className = '';
+    /** @var string */
     protected $finalPath = '';
+    /** @var bool */
     protected $escapeUnderscore = false;
 
     public function __construct(string $className, bool $escapeUnderscore = false)
@@ -69,6 +76,10 @@ final class WantedClassInfo
         }
     }
 
+    /**
+     * @param string[] $slashedClass
+     * @return string
+     */
     protected function findPath(array $slashedClass): string
     {
         return implode(DIRECTORY_SEPARATOR, $slashedClass);
@@ -314,7 +325,7 @@ final class Autoload
 
 // PHP < 8.1
 if (!function_exists('enum_exists')) {
-    function enum_exists(string $enumName, bool $autoload = true)
+    function enum_exists(string $enumName, bool $autoload = true): bool
     {
         return false;
     }
@@ -323,7 +334,7 @@ if (!function_exists('enum_exists')) {
 
 class Helper
 {
-    public static function load(string $rootPath, string $vendorPath, string $projectPath = '')
+    public static function load(string $rootPath, string $vendorPath, string $projectPath = ''): void
     {
         Autoload::setBasePath($rootPath);
         // maybe looks like magic, but it is not

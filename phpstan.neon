@@ -1,0 +1,16 @@
+parameters:
+	level: 6
+		# more is problematic due callbacks
+	paths:
+		- 'src'
+#	scanFiles:
+#		- 'php-tests/CommonTestClass.php'
+	excludePaths:
+		- 'tests'
+#	bootstrapFiles:
+#		- 'php-tests/_autoload.php'
+	ignoreErrors:
+		-
+			message: '#If condition is always false\.#'
+			path: 'src/Autoload.php'
+			# quality WTF - can be and will be false when wanted structure is not found in that file

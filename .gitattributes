@@ -1,0 +1,7 @@
+* text=auto
+
+# Ignore stuff for export
+/.github     export-ignore
+/doc         export-ignore
+/example     export-ignore
+/tests       export-ignore

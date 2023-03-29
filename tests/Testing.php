@@ -109,15 +109,20 @@ class Testing extends TestingBase
     /**
      * Non-existent trait in class
      * @throws AloadTestingException
+     * @throws AloadSkipException
      * Currently problems with testing non-existent traits
      */
     protected function testFullPathFailTrait(): void
     {
-        try {
-            new user\project\TestClass4F(); // trait
-            throw new AloadTestingException('Pass for non-existent trait!');
-        } catch (AutoloadException $ex) {
-            // OK
+        if (PHP_VERSION_ID <= 70400) {
+            try {
+                new user\project\TestClass4F(); // trait
+                throw new AloadTestingException('Pass for non-existent trait!');
+            } catch (AutoloadException $ex) {
+                // OK
+            }
+        } else {
+            throw new AloadSkipException('Skipping Traits.');
         }
     }
 
@@ -172,11 +177,14 @@ class Testing extends TestingBase
 
     /**
      * Test for Enum type
+     * @throws AloadSkipException
      */
     protected function testEnumOk(): void
     {
         if (PHP_VERSION_ID >= 80100) {
             $var = \user\project\TestEnum1::Clubs;
+        } else {
+            throw new AloadSkipException('Skipping Enums.');
         }
     }
 
