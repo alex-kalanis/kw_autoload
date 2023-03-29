@@ -30,7 +30,6 @@ class Testing extends TestingBase
         require_once realpath(implode(DIRECTORY_SEPARATOR, [__DIR__ , '..', 'src', 'Autoload.php']));
 
         Autoload::setBasePath(realpath(implode(DIRECTORY_SEPARATOR, [__DIR__ , 'structure'])));
-        Autoload::testMode(true);
         // Maybe looks like magic, but it is not
         // Beware! If the file will be found earlier (in bad path) and checks pass (mainly due bad namespace), it will be used!
         // For testing purposes they are in the reverse order
@@ -207,4 +206,6 @@ class Testing extends TestingBase
 
 
 $lib = new Testing();
+Autoload::testMode(true);
 $lib->runner();
+Autoload::testMode(false);
