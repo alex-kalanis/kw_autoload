@@ -59,16 +59,16 @@ final class WantedClassInfo
     {
         $classPath = explode(static::PHP_CLASS_DELIMITER, $className);
         $len = count($classPath);
-        if ($len > 3) {
+        if (3 < $len) {
             $this->vendor = reset($classPath);
             $this->project = next($classPath);
             $this->module = next($classPath);
             $this->classPath = $this->findPath(array_slice($classPath, 3));
-        } elseif ($len > 2) {
+        } elseif (2 < $len) {
             $this->project = reset($classPath);
             $this->module = next($classPath);
             $this->classPath = $this->findPath(array_slice($classPath, 2));
-        } elseif ($len > 1) {
+        } elseif (1 < $len) {
             $this->module = reset($classPath);
             $this->classPath = $this->findPath(array_slice($classPath, 1));
         } else {
