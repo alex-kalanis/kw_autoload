@@ -6,14 +6,15 @@
  */
 namespace kalanis\kw_autoload;
 
-use Exception;
+
+use ReflectionException;
 
 
 /**
  * Class AutoloadException
  * @package kalanis\kw_load
  */
-final class AutoloadException extends Exception
+final class AutoloadException extends ReflectionException
 {
 }
 
@@ -295,6 +296,7 @@ final class Autoload
                     return true;
                 }
             }
+            // someone stored info which is no longer valid
             unset(static::$classesInfo[$className]);
         }
         return false;
