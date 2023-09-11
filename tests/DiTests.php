@@ -70,6 +70,34 @@ class DiTests extends TestingBase
     }
 
     /**
+     * Everything OK with these classes
+     * @throws AloadTestingException
+     */
+    protected function testDiAliased(): void
+    {
+        $class = new user\project\TestClass8();
+        $di = \kalanis\kw_autoload\DependencyInjection::getInstance();
+        $di->addClassRep($class);
+        $di->aliasAs(user\project\TestClass8::class, 'alias for class');
+        if (!$di->getRep('alias for class') instanceof user\project\TestClass8) {
+            throw new AloadTestingException('Died for set alias!');
+        }
+    }
+
+    /**
+     * Trying to get not-yet-known class
+     * @throws AloadTestingException
+     */
+    protected function testNotAliasedYet(): void
+    {
+        $di = \kalanis\kw_autoload\DependencyInjection::getInstance();
+        $di->aliasAs(project\TestClass2::class, 'try to get this');
+        if (!empty($di->getRep('try to get this'))) {
+            throw new AloadTestingException('Died for aliased class!');
+        }
+    }
+
+    /**
      * Try to get class when you already know params
      * @throws AloadTestingException
      */

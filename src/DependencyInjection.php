@@ -86,6 +86,19 @@ class DependencyInjection
     }
 
     /**
+     * Make an alias for known class - can get class by different name
+     * @param string $originalClass
+     * @param string $newAlias
+     */
+    public function aliasAs(string $originalClass, string $newAlias): void
+    {
+        $class = $this->getRep($originalClass);
+        if (!is_null($class)) {
+            $this->addRep($newAlias, $class);
+        }
+    }
+
+    /**
      * Initialize class with usage of known representations
      * Use either param type/instance or name to lookup in known representations
      * @param string $which
