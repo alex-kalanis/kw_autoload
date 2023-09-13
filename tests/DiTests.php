@@ -168,6 +168,22 @@ class DiTests extends TestingBase
     }
 
     /**
+     * Try to get class which is in fact interface
+     * @throws AloadTestingException
+     */
+    protected function testInitIface(): void
+    {
+        $di = \kalanis\kw_autoload\DependencyInjection::getInstance();
+        try {
+            if (!empty($di->initClass(IXTst1::class))) {
+                throw new AloadTestingException('Init interface!');
+            }
+        } catch (ReflectionException $ex) {
+            throw new AloadTestingException('Died for prepared class params!');
+        }
+    }
+
+    /**
      * Try to get class when you already pass params
      * @throws AloadTestingException
      */
@@ -208,6 +224,27 @@ class DiTests extends TestingBase
         try {
             if (empty($di->initClass(XTest6::class))) {
                 throw new AloadTestingException('Died for prepared class!');
+            }
+        } catch (ReflectionException $ex) {
+            throw new AloadTestingException('Died for preset class params!');
+        }
+    }
+
+    /**
+     * Try to get class when you pass default params
+     * @throws AloadTestingException
+     */
+    protected function testAlreadyInstanced(): void
+    {
+        $di = \kalanis\kw_autoload\DependencyInjection::getInstance();
+        try {
+            $tst = $di->initClass(XTest7::class);
+            if (empty($tst)) {
+                throw new AloadTestingException('Died for prepared class!');
+            }
+            /** @var XTest7 $tst */
+            if ($tst->cl2 !== $tst->xcl->cl2) {
+                throw new AloadTestingException('Different instances!');
             }
         } catch (ReflectionException $ex) {
             throw new AloadTestingException('Died for preset class params!');
@@ -324,8 +361,11 @@ class XTest1
 
 class XTest2
 {
+    public $cl2 = null;
+
     public function __construct(project\TestClass2 $class2, XTest4 $class8)
     {
+        $this->cl2 = $class2;
     }
 }
 
@@ -358,6 +398,19 @@ class XTest6
 {
     public function __construct(int $ownData = 27)
     {
+    }
+}
+
+
+class XTest7
+{
+    public $cl2 = null;
+    public $xcl = null;
+
+    public function __construct(project\TestClass2 $class2, XTest2 $class, int $ownData = 27)
+    {
+        $this->cl2 = $class2;
+        $this->xcl = $class;
     }
 }
 

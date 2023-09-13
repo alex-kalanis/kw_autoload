@@ -135,6 +135,9 @@ class DependencyInjection
     {
         try {
             $reflectionClass = new ReflectionClass($which);
+            if (!$reflectionClass->isInstantiable()) {
+                return null;
+            }
         } catch (ReflectionException $ex) {
             return null;
         }
@@ -157,6 +160,16 @@ class DependencyInjection
                 $initParams[] = $known;
                 continue;
             };
+
+            // by type (class name) new instance
+            try {
+                if ($reflectionInstance = $this->initClass($classType, $additionalParams)) {
+                    $initParams[] = $reflectionInstance;
+                    continue;
+                }
+            } catch (ReflectionException $ex) {
+                // nothing here
+            }
 
             // by external data - class type
             if (isset($additionalParams[$classType])) {
