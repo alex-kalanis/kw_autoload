@@ -19,7 +19,7 @@ class DiPsr implements Container\ContainerInterface
     public function get(string $id)
     {
         try {
-            $class = DependencyInjection::getInstance()->initStoredClass($id, []);
+            $class = DependencyInjection::getInstance()->initStoredClass($id);
             if (empty($class)) {
                 throw new NotFoundException(sprintf('The class *%s* has not been set in DI', $id));
             }

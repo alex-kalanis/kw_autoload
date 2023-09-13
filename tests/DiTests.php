@@ -106,7 +106,7 @@ class DiTests extends TestingBase
         $di->addClassRep(new project\TestClass2());
         $di->addClassRep(new user\project\TestClass8());
         try {
-            if (empty($di->initClass(XTest1::class, []))) {
+            if (empty($di->initClass(XTest1::class))) {
                 throw new AloadTestingException('Died for prepared class!');
             }
         } catch (ReflectionException $ex) {
@@ -158,7 +158,7 @@ class DiTests extends TestingBase
         $di->addClassRep(new project\TestClass2());
         $di->addRep(IXTst1::class, new XTest4());
         try {
-            if (empty($di->initClass(XTest3::class, []))) {
+            if (empty($di->initClass(XTest3::class))) {
                 throw new AloadTestingException('Died for prepared class!');
             }
         } catch (ReflectionException $ex) {
@@ -174,7 +174,7 @@ class DiTests extends TestingBase
     {
         $di = \kalanis\kw_autoload\DependencyInjection::getInstance();
         try {
-            if (empty($di->initClass(XTest4::class, []))) {
+            if (empty($di->initClass(XTest4::class))) {
                 throw new AloadTestingException('Died for prepared class!');
             }
         } catch (ReflectionException $ex) {
@@ -190,7 +190,7 @@ class DiTests extends TestingBase
     {
         $di = \kalanis\kw_autoload\DependencyInjection::getInstance();
         try {
-            $di->initClass(XTest5::class, []);
+            $di->initClass(XTest5::class);
             throw new AloadTestingException('Initialized unprepared class!');
         } catch (ReflectionException $ex) {
             // pass
@@ -205,7 +205,7 @@ class DiTests extends TestingBase
     {
         $di = \kalanis\kw_autoload\DependencyInjection::getInstance();
         try {
-            if (empty($di->initClass(XTest6::class, []))) {
+            if (empty($di->initClass(XTest6::class))) {
                 throw new AloadTestingException('Died for prepared class!');
             }
         } catch (ReflectionException $ex) {
@@ -223,8 +223,8 @@ class DiTests extends TestingBase
         $di->addRep(project\TestClass2::class, new project\TestClass2());
         $di->addRep(user\project\TestClass8::class, new user\project\TestClass8());
         try {
-            $cl1 = $di->initStoredClass(XTest1::class, []);
-            $cl2 = $di->initStoredClass(XTest1::class, []);
+            $cl1 = $di->initStoredClass(XTest1::class);
+            $cl2 = $di->initStoredClass(XTest1::class);
             if ($cl1 !== $cl2) {
                 throw new AloadTestingException('Class instances are not the same!');
             }
@@ -243,7 +243,7 @@ class DiTests extends TestingBase
         try {
             $cl1 = new user\project\TestClass2();
             $di->addClassWithDeepInstances($cl1);
-            $cl2 = $di->initStoredClass(\user\project\TestClass7::class, []);
+            $cl2 = $di->initStoredClass(\user\project\TestClass7::class);
             if ($cl1 !== $cl2) {
                 throw new AloadTestingException('Class instances are not the same!');
             }
@@ -262,7 +262,7 @@ class DiTests extends TestingBase
         try {
             $cl1 = new user\project\TestClass3();
             $di->addClassWithDeepInstances($cl1);
-            $cl2 = $di->initStoredClass(\user\project\TestIface1::class, []);
+            $cl2 = $di->initStoredClass(\user\project\TestIface1::class);
             if ($cl1 !== $cl2) {
                 throw new AloadTestingException('Class instances are not the same!');
             }

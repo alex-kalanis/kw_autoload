@@ -131,7 +131,7 @@ class DependencyInjection
      * @throws ReflectionException
      * @return object|null
      */
-    public function initClass(string $which, array $additionalParams): ?object
+    public function initClass(string $which, array $additionalParams = []): ?object
     {
         try {
             $reflectionClass = new ReflectionClass($which);
@@ -182,7 +182,7 @@ class DependencyInjection
      * @throws ReflectionException
      * @return object|null
      */
-    public function initStoredClass(string $which, array $additionalParams): ?object
+    public function initStoredClass(string $which, array $additionalParams = []): ?object
     {
         if ($try = $this->getRep($which)) {
             return $try;
