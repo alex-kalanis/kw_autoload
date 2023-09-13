@@ -110,7 +110,7 @@ class DiTests extends TestingBase
             if (empty($di->initClass(XTest1::class, []))) {
                 throw new AloadTestingException('Died for prepared class!');
             }
-        } catch (AutoloadException $ex) {
+        } catch (ReflectionException $ex) {
             // OK
         }
     }
@@ -127,7 +127,7 @@ class DiTests extends TestingBase
             if (empty($di->initClass(XTest2::class, [XTest4::class => new XTest4(), ]))) {
                 throw new AloadTestingException('Died for prepared class!');
             }
-        } catch (AutoloadException $ex) {
+        } catch (ReflectionException $ex) {
             throw new AloadTestingException('Died for prepared class params!');
         }
     }
@@ -144,7 +144,7 @@ class DiTests extends TestingBase
             if (empty($di->initClass(XTest3::class, ['testIface' => new XTest4(), ]))) {
                 throw new AloadTestingException('Died for prepared class!');
             }
-        } catch (AutoloadException $ex) {
+        } catch (ReflectionException $ex) {
             throw new AloadTestingException('Died for prepared class params!');
         }
     }
@@ -162,7 +162,7 @@ class DiTests extends TestingBase
             if (empty($di->initClass(XTest3::class, []))) {
                 throw new AloadTestingException('Died for prepared class!');
             }
-        } catch (AutoloadException $ex) {
+        } catch (ReflectionException $ex) {
             throw new AloadTestingException('Died for prepared class params!');
         }
     }
@@ -178,7 +178,7 @@ class DiTests extends TestingBase
             if (empty($di->initClass(XTest4::class, []))) {
                 throw new AloadTestingException('Died for prepared class!');
             }
-        } catch (AutoloadException $ex) {
+        } catch (ReflectionException $ex) {
             throw new AloadTestingException('Died for prepared class params!');
         }
     }
@@ -193,7 +193,7 @@ class DiTests extends TestingBase
         try {
             $di->initClass(XTest5::class, []);
             throw new AloadTestingException('Initialized unprepared class!');
-        } catch (AutoloadException $ex) {
+        } catch (ReflectionException $ex) {
             // pass
         }
     }
@@ -213,7 +213,7 @@ class DiTests extends TestingBase
             if ($cl1 !== $cl2) {
                 throw new AloadTestingException('Class instances are not the same!');
             }
-        } catch (AutoloadException $ex) {
+        } catch (ReflectionException $ex) {
             throw new AloadTestingException('Died for prepared class!');
         }
     }
@@ -232,7 +232,7 @@ class DiTests extends TestingBase
             if ($cl1 !== $cl2) {
                 throw new AloadTestingException('Class instances are not the same!');
             }
-        } catch (AutoloadException $ex) {
+        } catch (ReflectionException $ex) {
             throw new AloadTestingException('Died for prepared class!');
         }
     }
@@ -251,7 +251,7 @@ class DiTests extends TestingBase
             if ($cl1 !== $cl2) {
                 throw new AloadTestingException('Class instances are not the same!');
             }
-        } catch (AutoloadException $ex) {
+        } catch (ReflectionException $ex) {
             throw new AloadTestingException('Died for prepared class!');
         }
     }

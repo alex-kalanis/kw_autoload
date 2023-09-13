@@ -2,11 +2,6 @@
 
 namespace kalanis\kw_autoload;
 
-if (!class_exists('\kalanis\kw_autoload\Autoload')) {
-    require_once __DIR__ . '/Autoload.php';
-    Autoload::setBasePath(realpath(implode(DIRECTORY_SEPARATOR, [__DIR__ , '..', '..', '..', '..'])));
-}
-
 
 use ReflectionClass;
 use ReflectionException;
@@ -68,15 +63,11 @@ class DependencyInjection
     /**
      * Add class directly - also add extends and interfaces
      * @param object $willBeRepresented
-     * @throws AutoloadException
+     * @throws ReflectionException
      */
     public function addClassWithDeepInstances(object $willBeRepresented): void
     {
-        try {
-            $this->addClassDeepInstances(get_class($willBeRepresented), $willBeRepresented);
-        } catch (ReflectionException $ex) {
-            throw new AutoloadException($ex->getMessage(), $ex->getCode(), $ex);
-        }
+        $this->addClassDeepInstances(get_class($willBeRepresented), $willBeRepresented);
     }
 
     /**
@@ -137,7 +128,7 @@ class DependencyInjection
      * Use either param type/instance or name to lookup in known representations
      * @param string $which
      * @param array<string, mixed> $additionalParams
-     * @throws AutoloadException
+     * @throws ReflectionException
      * @return object|null
      */
     public function initClass(string $which, array $additionalParams): ?object
@@ -170,7 +161,7 @@ class DependencyInjection
                 continue;
             }
 
-            throw new AutoloadException(sprintf('Missing definition for param *%s* in class *%s*', $paramName, $which));
+            throw new ReflectionException(sprintf('Missing definition for param *%s* in class *%s*', $paramName, $which));
         }
 
         return $reflectionClass->newInstanceArgs($initParams);
@@ -180,7 +171,7 @@ class DependencyInjection
      * Initialize class and store it for future usage
      * @param string $which
      * @param array<string, mixed> $additionalParams
-     * @throws AutoloadException
+     * @throws ReflectionException
      * @return object|null
      */
     public function initStoredClass(string $which, array $additionalParams): ?object
