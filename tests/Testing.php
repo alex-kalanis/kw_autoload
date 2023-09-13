@@ -207,5 +207,6 @@ class Testing extends TestingBase
 
 $lib = new Testing();
 Autoload::testMode(true);
-$lib->runner();
+$code = $lib->runner();
 Autoload::testMode(false);
+die($code);

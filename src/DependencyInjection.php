@@ -66,6 +66,40 @@ class DependencyInjection
     }
 
     /**
+     * Add class directly - also add extends and interfaces
+     * @param object $willBeRepresented
+     * @throws AutoloadException
+     */
+    public function addClassWithDeepInstances(object $willBeRepresented): void
+    {
+        try {
+            $this->addClassDeepInstances(get_class($willBeRepresented), $willBeRepresented);
+        } catch (ReflectionException $ex) {
+            throw new AutoloadException($ex->getMessage(), $ex->getCode(), $ex);
+        }
+    }
+
+    /**
+     * @param string $forWhat
+     * @param object $willBeRepresented
+     * @throws ReflectionException
+     */
+    protected function addClassDeepInstances(string $forWhat, object $willBeRepresented): void
+    {
+        $ref = new ReflectionClass($forWhat);
+        // object itself
+        $this->addRep($forWhat, $willBeRepresented);
+        // interfaces
+        foreach ($ref->getInterfaces() as $interface) {
+            $this->addRep($interface->getName(), $willBeRepresented);
+        }
+        // parent
+        if ($ext = $ref->getParentClass()) {
+            $this->addClassDeepInstances($ext->getName(), $willBeRepresented);
+        }
+    }
+
+    /**
      * Get class by its known representation
      * @param string $what
      * @return object|null

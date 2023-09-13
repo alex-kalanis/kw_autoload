@@ -217,6 +217,44 @@ class DiTests extends TestingBase
             throw new AloadTestingException('Died for prepared class!');
         }
     }
+
+    /**
+     * Try to get class when you set it as instance
+     * @throws AloadTestingException
+     */
+    protected function testExtendsOf(): void
+    {
+        $di = \kalanis\kw_autoload\DependencyInjection::getInstance();
+        try {
+            $cl1 = new user\project\TestClass2();
+            $di->addClassWithDeepInstances($cl1);
+            $cl2 = $di->initStoredClass(\user\project\TestClass7::class, []);
+            if ($cl1 !== $cl2) {
+                throw new AloadTestingException('Class instances are not the same!');
+            }
+        } catch (AutoloadException $ex) {
+            throw new AloadTestingException('Died for prepared class!');
+        }
+    }
+
+    /**
+     * Try to get class when you set it as instance
+     * @throws AloadTestingException
+     */
+    protected function testInterfaceOf(): void
+    {
+        $di = \kalanis\kw_autoload\DependencyInjection::getInstance();
+        try {
+            $cl1 = new user\project\TestClass3();
+            $di->addClassWithDeepInstances($cl1);
+            $cl2 = $di->initStoredClass(\user\project\TestIface1::class, []);
+            if ($cl1 !== $cl2) {
+                throw new AloadTestingException('Class instances are not the same!');
+            }
+        } catch (AutoloadException $ex) {
+            throw new AloadTestingException('Died for prepared class!');
+        }
+    }
 }
 
 
@@ -266,5 +304,6 @@ class XTest5
 
 $lib = new DiTests();
 Autoload::testMode(true);
-$lib->runner();
+$code = $lib->runner();
 Autoload::testMode(false);
+die($code);

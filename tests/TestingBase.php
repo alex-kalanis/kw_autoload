@@ -19,6 +19,9 @@ class TestingBase
 {
     const TEST_PREFIX = 'test';
 
+    /** @var int return code */
+    protected $return = 0;
+
     /**
      * Call virtual method - just name without prefix for running only one test
      * @param string $name
@@ -34,8 +37,9 @@ class TestingBase
 
     /**
      * Run this one for get all tests at once
+     * @return int
      */
-    public function runner(): void
+    public function runner(): int
     {
         $methods = get_class_methods($this);
         foreach ($methods as $method) {
@@ -43,6 +47,7 @@ class TestingBase
                 $this->caller($method, $method);
             }
         }
+        return $this->return;
     }
 
     /**
@@ -59,6 +64,7 @@ class TestingBase
         } catch (AloadSkipException $ex) {
             echo sprintf('%s  [SKIP] %s %s', str_pad($name, 30), $ex->getMessage(), PHP_EOL);
         } catch (AutoloadException | AloadTestingException $ex) {
+            $this->return = 1;
             echo sprintf('%s  [FAIL] %s %s', str_pad($name, 30), $ex->getMessage(), PHP_EOL);
         }
     }
