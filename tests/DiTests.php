@@ -10,6 +10,7 @@ if (version_compare(phpversion(), MIN_NECESSARY_VERSION, '<')) {
 
 use kalanis\kw_autoload\Autoload;
 
+
 require_once __DIR__ . DIRECTORY_SEPARATOR . 'TestingBase.php';
 
 
@@ -253,6 +254,24 @@ class DiTests extends TestingBase
     }
 
     /**
+     * Try to get class when you set it as instance - deep lookup
+     * @throws AloadTestingException
+     */
+    protected function testDeepExtendsOf(): void
+    {
+        $di = \kalanis\kw_autoload\DependencyInjection::getInstance();
+        try {
+            $cl1 = $di->initDeepStoredClass(user\project\TestClass2::class);
+            $cl2 = $di->getRep(\user\project\TestClass7::class);
+            if ($cl1 !== $cl2) {
+                throw new AloadTestingException('Class instances are not the same!');
+            }
+        } catch (ReflectionException $ex) {
+            throw new AloadTestingException('Died for prepared class!');
+        }
+    }
+
+    /**
      * Try to get class when you set it as instance
      * @throws AloadTestingException
      */
@@ -262,6 +281,24 @@ class DiTests extends TestingBase
         try {
             $cl1 = new user\project\TestClass3();
             $di->addClassWithDeepInstances($cl1);
+            $cl2 = $di->initStoredClass(\user\project\TestIface1::class);
+            if ($cl1 !== $cl2) {
+                throw new AloadTestingException('Class instances are not the same!');
+            }
+        } catch (ReflectionException $ex) {
+            throw new AloadTestingException('Died for prepared class!');
+        }
+    }
+
+    /**
+     * Try to get class when you set it as instance - deep lookup
+     * @throws AloadTestingException
+     */
+    protected function testDeepInterfaceOf(): void
+    {
+        $di = \kalanis\kw_autoload\DependencyInjection::getInstance();
+        try {
+            $cl1 = $di->initDeepStoredClass(user\project\TestClass3::class);
             $cl2 = $di->initStoredClass(\user\project\TestIface1::class);
             if ($cl1 !== $cl2) {
                 throw new AloadTestingException('Class instances are not the same!');

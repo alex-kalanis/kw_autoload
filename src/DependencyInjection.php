@@ -195,4 +195,21 @@ class DependencyInjection
 
         return $try;
     }
+
+    /**
+     * Initialize class and store it for future usage - deep lookup in them
+     * @param string $which
+     * @param array<string, mixed> $additionalParams
+     * @throws ReflectionException
+     * @return object|null
+     */
+    public function initDeepStoredClass(string $which, array $additionalParams = []): ?object
+    {
+        if ($try = $this->initStoredClass($which, $additionalParams)) {
+            $this->addClassDeepInstances($which, $try);
+            return $try;
+        }
+
+        return null;
+    }
 }
