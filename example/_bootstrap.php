@@ -26,3 +26,14 @@ spl_autoload_register('\kalanis\kw_autoload\Autoload::autoloading');
 \kalanis\kw_autoload\CachedAutoload::useCache();
 
 /// now you can continue with bootstrapping your project
+
+// Dependency Injections
+$di = \kalanis\kw_autoload\DependencyInjection::getInstance();
+// when you want to store unknown class even as instance of its parents and interfaces
+$testClass3 = $di->initDeepStoredClass(\user\project\TestClass3::class);
+// when you already have all necessities and do not want to store them
+$testClass2 = $di->initClass(\project\TestClass2::class, ['testIface' => new XTest4(), ]);
+
+// and when you want to have PSR-DI:
+$psr = new \kalanis\kw_autoload\DiPsr();
+$testClass4 = $psr->get(\user\project\TestClass4::class);

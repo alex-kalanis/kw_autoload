@@ -138,37 +138,50 @@ class DependencyInjection
         } catch (ReflectionException $ex) {
             return null;
         }
+
+        // init - at first without constructor
         try {
             $construct = $reflectionClass->getMethod('__construct');
         } catch (ReflectionException $ex) {
             // no construct - return immediately
             return $reflectionClass->newInstance();
         }
+
+        // fill found params
         $initParams = [];
         foreach ($construct->getParameters() as $parameter) {
+
+            // by type (class/instance name) from internal storage
             $classType = strval($parameter->getType());
             if ($known = $this->getRep($classType)) {
                 $initParams[] = $known;
                 continue;
             };
+
+            // by external data - class type
             if (isset($additionalParams[$classType])) {
                 $initParams[] = $additionalParams[$classType];
                 continue;
             }
+
+            // by external data - param name
             $paramName = strval($parameter->getName());
             if (isset($additionalParams[$paramName])) {
                 $initParams[] = $additionalParams[$paramName];
                 continue;
             }
 
+            // default value set
             try {
                 $defaultParam = $parameter->getDefaultValue();
                 $initParams[] = $defaultParam;
                 continue;
             } catch (ReflectionException $ex) {
+                // set nothing, will fail
                 // next...
             }
 
+            // param not found
             throw new ReflectionException(sprintf('Missing definition for param *%s* in class *%s*', $paramName, $which));
         }
 
@@ -176,7 +189,7 @@ class DependencyInjection
     }
 
     /**
-     * Initialize class and store it for future usage
+     * Initialize class and store it for future usage - shallow lookup
      * @param string $which
      * @param array<string, mixed> $additionalParams
      * @throws ReflectionException
@@ -197,7 +210,7 @@ class DependencyInjection
     }
 
     /**
-     * Initialize class and store it for future usage - deep lookup in them
+     * Initialize class and store it for future usage - deep lookup in new class
      * @param string $which
      * @param array<string, mixed> $additionalParams
      * @throws ReflectionException
