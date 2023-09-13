@@ -9,7 +9,6 @@ if (version_compare(phpversion(), MIN_NECESSARY_VERSION, '<')) {
 }
 
 use kalanis\kw_autoload\Autoload;
-use kalanis\kw_autoload\AutoloadException;
 
 require_once __DIR__ . DIRECTORY_SEPARATOR . 'TestingBase.php';
 
@@ -199,6 +198,22 @@ class DiTests extends TestingBase
     }
 
     /**
+     * Try to get class when you pass default params
+     * @throws AloadTestingException
+     */
+    protected function testDefaultParamSet(): void
+    {
+        $di = \kalanis\kw_autoload\DependencyInjection::getInstance();
+        try {
+            if (empty($di->initClass(XTest6::class, []))) {
+                throw new AloadTestingException('Died for prepared class!');
+            }
+        } catch (ReflectionException $ex) {
+            throw new AloadTestingException('Died for preset class params!');
+        }
+    }
+
+    /**
      * Try to get class when you did not pass everything
      * @throws AloadTestingException
      */
@@ -297,6 +312,14 @@ class XTest4 implements IXTst1
 class XTest5
 {
     public function __construct(int $testData)
+    {
+    }
+}
+
+
+class XTest6
+{
+    public function __construct(int $ownData = 27)
     {
     }
 }

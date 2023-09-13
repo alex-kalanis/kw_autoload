@@ -161,6 +161,14 @@ class DependencyInjection
                 continue;
             }
 
+            try {
+                $defaultParam = $parameter->getDefaultValue();
+                $initParams[] = $defaultParam;
+                continue;
+            } catch (ReflectionException $ex) {
+                // next...
+            }
+
             throw new ReflectionException(sprintf('Missing definition for param *%s* in class *%s*', $paramName, $which));
         }
 
