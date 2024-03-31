@@ -17,10 +17,10 @@ class AloadSkipException extends \Exception
 
 class TestingBase
 {
-    const TEST_PREFIX = 'test';
+    public const TEST_PREFIX = 'test';
 
     /** @var int return code */
-    protected $return = 0;
+    protected int $return = 0;
 
     /**
      * Call virtual method - just name without prefix for running only one test

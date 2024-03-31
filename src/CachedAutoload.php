@@ -66,10 +66,8 @@ class ClassFormatter
  */
 class ClassStorage
 {
-    /** @var ClassFormatter */
-    protected $format = null;
-    /** @var string */
-    protected $storagePath = '';
+    protected ClassFormatter $format;
+    protected string $storagePath = '';
 
     public function __construct(ClassFormatter $format, string $storageFile = '')
     {

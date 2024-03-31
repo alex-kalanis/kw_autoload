@@ -26,23 +26,16 @@ final class AutoloadException extends ReflectionException
  */
 final class WantedClassInfo
 {
-    const PHP_CLASS_DELIMITER = '\\';
-    const PHP_EXTENSION = '.php';
+    private const PHP_CLASS_DELIMITER = '\\';
+    public const PHP_EXTENSION = '.php';
 
-    /** @var string */
-    protected $vendor = '';
-    /** @var string */
-    protected $project = '';
-    /** @var string */
-    protected $module = '';
-    /** @var string */
-    protected $classPath = '';
-    /** @var string */
-    protected $className = '';
-    /** @var string */
-    protected $finalPath = '';
-    /** @var bool */
-    protected $escapeUnderscore = false;
+    protected string $vendor = '';
+    protected string $project = '';
+    protected string $module = '';
+    protected string $classPath = '';
+    protected string $className = '';
+    protected string $finalPath = '';
+    protected bool $escapeUnderscore = false;
 
     public function __construct(string $className, bool $escapeUnderscore = false)
     {
@@ -148,16 +141,13 @@ final class WantedClassInfo
 final class Autoload
 {
 
-    /** @var string */
-    protected static $basePath = '';
+    protected static string $basePath = '';
     /** @var string[] */
-    protected static $paths = [];
+    protected static array $paths = [];
     /** @var WantedClassInfo[] */
-    protected static $classesInfo = [];
-    /** @var bool */
-    protected static $escapingUnderscore = false;
-    /** @var bool */
-    protected static $testingMode = false;
+    protected static array $classesInfo = [];
+    protected static bool $escapingUnderscore = false;
+    protected static bool $testingMode = false;
 
     /**
      * Where the heck my project is?

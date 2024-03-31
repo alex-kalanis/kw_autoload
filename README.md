@@ -1,6 +1,10 @@
 kw_autoload
 ================
 
+![Build Status](https://github.com/alex-kalanis/kw_autoload/actions/workflows/code_checks.yml/badge.svg)
+[![Minimum PHP Version](https://img.shields.io/badge/php-%3E%3D%207.4-8892BF.svg)](https://php.net/)
+[![License](https://img.shields.io/badge/License-BSD_3--Clause-blue.svg)](https://opensource.org/licenses/BSD-3-Clause)
+
 Personal autoloader for KWCMS. Far simplified than Composer. But with tests. No need
 for remote CLI. Basic variant contains no cache. But you can use supplied cache or
 write your own.
