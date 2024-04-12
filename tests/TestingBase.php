@@ -60,12 +60,12 @@ class TestingBase
     {
         try {
             call_user_func_array([$this, $fullName], $arguments);
-            echo sprintf('%s  [ OK ] %s', str_pad($name, 30), PHP_EOL);
+            echo sprintf('%s  [ OK ] %s', str_pad($name, 35), PHP_EOL);
         } catch (AloadSkipException $ex) {
-            echo sprintf('%s  [SKIP] %s %s', str_pad($name, 30), $ex->getMessage(), PHP_EOL);
+            echo sprintf('%s  [SKIP] %s %s', str_pad($name, 35), $ex->getMessage(), PHP_EOL);
         } catch (AutoloadException | AloadTestingException $ex) {
             $this->return = 1;
-            echo sprintf('%s  [FAIL] %s %s', str_pad($name, 30), $ex->getMessage(), PHP_EOL);
+            echo sprintf('%s  [FAIL] %s %s', str_pad($name, 35), $ex->getMessage(), PHP_EOL);
         }
     }
 }

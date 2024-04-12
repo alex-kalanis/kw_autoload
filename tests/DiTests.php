@@ -252,6 +252,37 @@ class DiTests extends TestingBase
     }
 
     /**
+     * Try to get class when you pass default params
+     * @throws AloadTestingException
+     */
+    protected function testPassRestUnknownParamsNothing(): void
+    {
+        $di = \kalanis\kw_autoload\DependencyInjection::getInstance();
+        $di->setParamNamesForAdditional([]);
+        try {
+            $di->initClass(XTest8::class, ['foo' => 'bar', 'baz' => 'dfh']);
+            throw new AloadTestingException('Died for using additional class params when not set!');
+        } catch (ReflectionException $ex) {
+            // pass
+        }
+    }
+
+    /**
+     * Try to get class when you pass default params
+     * @throws AloadTestingException
+     */
+    protected function testPassRestUnknownParamsUsed(): void
+    {
+        $di = \kalanis\kw_autoload\DependencyInjection::getInstance();
+        $di->setParamNamesForAdditional(['passThings']);
+        try {
+            $di->initClass(XTest8::class, ['foo' => 'bar', 'baz' => 'dfh']);
+        } catch (ReflectionException $ex) {
+            throw new AloadTestingException('Died for using additional class params when set!');
+        }
+    }
+
+    /**
      * Try to get class when you did not pass everything
      * @throws AloadTestingException
      */
@@ -411,6 +442,14 @@ class XTest7
     {
         $this->cl2 = $class2;
         $this->xcl = $class;
+    }
+}
+
+
+class XTest8
+{
+    public function __construct(array $passThings)
+    {
     }
 }
 

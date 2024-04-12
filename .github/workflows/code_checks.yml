@@ -23,6 +23,8 @@ jobs:
           coverage: none
       - run: chmod +x tests/Testing.php
       - run: tests/Testing.php
+      - run: chmod +x tests/DiTests.php
+      - run: tests/DiTests.php
 
   code_style:
     runs-on: ubuntu-latest

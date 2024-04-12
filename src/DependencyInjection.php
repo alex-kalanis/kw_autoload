@@ -21,6 +21,9 @@ class DependencyInjection
     /** @var array<string, object> */
     protected array $classes = [];
 
+    /** @var string[] */
+    protected array $paramNamesForAdditionalParams = [];
+
     public static function getInstance(): self
     {
         if (empty(static::$instance)) {
@@ -38,6 +41,14 @@ class DependencyInjection
     private function __clone()
     {
         // disabled
+    }
+
+    /**
+     * @param string[] $names Which param names will get the whole passed configuration, not just the named parts
+     */
+    public function setParamNamesForAdditional(array $names): void
+    {
+        $this->paramNamesForAdditionalParams = $names;
     }
 
     /**
@@ -191,6 +202,12 @@ class DependencyInjection
             } catch (ReflectionException $ex) {
                 // set nothing, will fail
                 // next...
+            }
+
+            // hole for pass everything in DI
+            if (in_array($paramName, $this->paramNamesForAdditionalParams)) {
+                $initParams[] = $additionalParams;
+                continue;
             }
 
             // param not found
